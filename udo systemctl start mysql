@@ -1,0 +1,26 @@
+[0;1;31mx[0m mariadb.service - MariaDB 10.11.6 database server
+     Loaded: loaded (]8;;file://mutiara08/lib/systemd/system/mariadb.service/lib/systemd/system/mariadb.service]8;;; [0;1;32menabled[0m; preset: [0;1;32menabled[0m)
+     Active: [0;1;31mfailed[0m (Result: oom-kill) since Tue 2025-05-06 17:39:12 UTC; 10h ago
+   Duration: 8h 12min 51.956s
+       Docs: ]8;;man:mariadbd(8)man:mariadbd(8)]8;;
+             ]8;;https://mariadb.com/kb/en/library/systemd/https://mariadb.com/kb/en/library/systemd/]8;;
+    Process: 145 ExecStartPre=/usr/bin/install -m 755 -o mysql -g root -d /var/run/mysqld (code=exited, status=0/SUCCESS)
+    Process: 154 ExecStartPre=/bin/sh -c systemctl unset-environment _WSREP_START_POSITION (code=exited, status=0/SUCCESS)
+    Process: 158 ExecStartPre=/bin/sh -c [ ! -e /usr/bin/galera_recovery ] && VAR= ||   VAR=`cd /usr/bin/..; /usr/bin/galera_recovery`; [ $? -eq 0 ]   && systemctl set-environment _WSREP_START_POSITION=$VAR || exit 1 (code=exited, status=0/SUCCESS)
+    Process: 242 ExecStart=/usr/sbin/mariadbd $MYSQLD_OPTS $_WSREP_NEW_CLUSTER $_WSREP_START_POSITION [0;1;31m(code=killed, signal=KILL)[0m
+    Process: 280 ExecStartPost=/bin/sh -c systemctl unset-environment _WSREP_START_POSITION (code=exited, status=0/SUCCESS)
+    Process: 282 ExecStartPost=/etc/mysql/debian-start (code=exited, status=0/SUCCESS)
+   Main PID: 242 (code=killed, signal=KILL)
+     Status: "Taking your SQL requests now..."
+        CPU: 2.851s
+
+May 06 09:26:20 mutiara08 /etc/mysql/debian-start[324]: Triggering myisam-recover for all MyISAM tables and aria-recover for all Aria tables
+May 06 10:49:08 mutiara08 mariadbd[242]: 2025-05-06 10:49:08 32 [Warning] Access denied for user 'kinasih'@'localhost' (using password: YES)
+May 06 11:53:28 mutiara08 mariadbd[242]: 2025-05-06 11:53:28 38 [Warning] Aborted connection 38 to db: 'PKL-UKK' user: 'kinasih' host: 'localhost' (Got an error reading communication packets)
+May 06 12:03:08 mutiara08 mariadbd[242]: 2025-05-06 12:03:08 41 [Warning] Aborted connection 41 to db: 'PKL-UKK' user: 'kinasih' host: 'localhost' (Got an error reading communication packets)
+May 06 12:48:29 mutiara08 mariadbd[242]: 2025-05-06 12:48:29 61 [Warning] Aborted connection 61 to db: 'UKK-PKL' user: 'kinasih' host: 'localhost' (Got an error reading communication packets)
+May 06 12:57:23 mutiara08 mariadbd[242]: 2025-05-06 12:57:23 64 [Warning] Aborted connection 64 to db: 'UKK-PKL' user: 'kinasih' host: 'localhost' (Got an error reading communication packets)
+May 06 17:39:11 mutiara08 systemd[1]: [0;1;39m[0;1;31m[0;1;39mmariadb.service: A process of this unit has been killed by the OOM killer.[0m
+May 06 17:39:12 mutiara08 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mmariadb.service: Main process exited, code=killed, status=9/KILL[0m
+May 06 17:39:12 mutiara08 systemd[1]: [0;1;38;5;185m[0;1;39m[0;1;38;5;185mmariadb.service: Failed with result 'oom-kill'.[0m
+May 06 17:39:12 mutiara08 systemd[1]: mariadb.service: Consumed 2.851s CPU time.
