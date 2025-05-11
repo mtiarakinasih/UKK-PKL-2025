@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-
 class Guru extends Model
 {
     use HasFactory;
@@ -35,6 +34,12 @@ class Guru extends Model
             // Tambahkan aturan validasi lainnya sesuai kebutuhan
         ];
     }
+
+    public function pkls()
+    {
+        return $this->hasMany(Pkl::class); // 1 guru membimbing banyak PKL
+    }
+
 
     
 

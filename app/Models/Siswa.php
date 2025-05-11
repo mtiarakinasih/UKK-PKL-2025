@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Validation\Rule;
 
+
 class Siswa extends Model
 {
     use HasFactory;
@@ -51,4 +52,10 @@ class Siswa extends Model
             }
         });
     }
+
+    public function pkl()
+    {
+        return $this->hasOne(Pkl::class); // 1 siswa hanya 1 pkl
+    }
+
 }

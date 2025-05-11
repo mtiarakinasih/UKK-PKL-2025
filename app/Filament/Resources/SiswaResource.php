@@ -17,6 +17,7 @@ use Filament\Tables\Actions\Action;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\SiswaImport;
 use Illuminate\Validation\Rule;
+use Filament\Tables\Columns\BadgeColumn;
 
 class SiswaResource extends Resource
 {
@@ -30,6 +31,7 @@ class SiswaResource extends Resource
     {
         return $form->schema([
             TextInput::make('nama')
+                ->label('Nama Lengkap')
                 ->required()
                 ->maxLength(255),
 
@@ -50,15 +52,21 @@ class SiswaResource extends Resource
                 }),
 
             Select::make('gender')
+                ->label('Jenis Kelamin')
                 ->options([
                     'L' => 'Laki-laki',
                     'P' => 'Perempuan',
                 ])
                 ->required(),
 
-            TextInput::make('alamat')->required(),
+            TextInput::make('alamat')
+                ->required()
+                ->label('Alamat'),
 
-            TextInput::make('kontak')->required(),
+            TextInput::make('kontak')
+                ->required()
+                ->label('Kontak Telepon')
+                ->tel(),
 
             TextInput::make('email')
                 ->label('Email')
@@ -76,6 +84,7 @@ class SiswaResource extends Resource
                 ]),
 
             FileUpload::make('foto')
+                ->label('Foto Siswa')
                 ->nullable()
                 ->image()
                 ->acceptedFileTypes(['image/*'])
@@ -93,7 +102,16 @@ class SiswaResource extends Resource
                 Tables\Columns\TextColumn::make('nis')->sortable()->searchable(),
                 Tables\Columns\TextColumn::make('gender'),
                 Tables\Columns\TextColumn::make('email'),
+                Tables\Columns\TextColumn::make('status_pkl'),
                 ImageColumn::make('foto')->circular(),
+                BadgeColumn::make('status_pkl')
+                ->label('Status')
+                ->formatStateUsing(fn (bool $state) => $state ? 'Terlapor' : 'Belum Terlapor')
+                ->colors([
+                    'success' => fn ($state) => $state === true,
+                    'danger' => fn ($state) => $state === false,
+                ])
+                ->sortable(),
             ])
             ->headerActions([
                 Action::make('Import CSV')
@@ -135,6 +153,12 @@ class SiswaResource extends Resource
     {
         return 'Data Siswa';
     }
+
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Sumber Daya Manusia'; 
+    }
+
 
 
     public static function getRelations(): array

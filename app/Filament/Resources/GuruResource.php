@@ -29,6 +29,7 @@ class GuruResource extends Resource
     {
         return $form->schema([
             Forms\Components\TextInput::make('nama')
+                ->label('Nama Lengkap')
                 ->required()
                 ->maxLength(255),
 
@@ -42,6 +43,7 @@ class GuruResource extends Resource
                 ->label('NIP'),
 
             Forms\Components\Select::make('gender')
+                ->label('Jenis Kelamin')
                 ->options([
                     'L' => 'Laki-laki',
                     'P' => 'Perempuan',
@@ -49,10 +51,13 @@ class GuruResource extends Resource
                 ->required(),
 
             Forms\Components\TextInput::make('alamat')
-                ->required(),
+                ->required()
+                ->label('Alamat'),
 
             Forms\Components\TextInput::make('kontak')
-                ->required(),
+                ->required()
+                ->label('Kontak Telepon')
+                ->tel(),
 
             Forms\Components\TextInput::make('email')
                 ->required()
@@ -119,6 +124,11 @@ class GuruResource extends Resource
     {
         return 'Data Guru';
     }
+    public static function getNavigationGroup(): ?string
+    {
+        return 'Sumber Daya Manusia'; 
+    }
+
 
     public static function getRelations(): array
     {
