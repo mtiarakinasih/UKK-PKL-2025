@@ -40,7 +40,8 @@ class Guru extends Model
         return $this->hasMany(Pkl::class); // 1 guru membimbing banyak PKL
     }
 
-
-    
-
+    public function user()
+    {
+        return $this->hasOne(User::class, 'related_id')->where('role', 'guru');
+    }
 }

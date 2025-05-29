@@ -13,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Grid;
 use Filament\Notifications\Notification;
+use Filament\Support\Exceptions\Halt;
 
 class IndustriResource extends Resource
 {
@@ -108,7 +109,20 @@ class IndustriResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->before(function ($records) {
+                        foreach ($records as $record) {
+                            if ($record->pkls()->exists()) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title("Gagal Menghapus")
+                                    ->body("Industri ini masih digunakan sebagai tempat PKL.")
+                                    ->danger()
+                                    ->send();
+
+                                throw new Halt(); // Ini yang benar untuk menghentikan proses
+                            }
+                        }
+                    }),
                 ]),
             ]);
     }

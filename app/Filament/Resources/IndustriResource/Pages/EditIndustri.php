@@ -16,7 +16,20 @@ class EditIndustri extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
+            Actions\DeleteAction::make()
+                ->before(function ($record) {
+                    if ($record->pkls()->exists()) {
+                        Notification::make()
+                            ->title('Gagal menghapus')
+                            ->body('Industri ini masih digunakan sebagai tempat PKL.')
+                            ->danger()
+                            ->send();
+
+                        throw ValidationException::withMessages([
+                            'delete' => 'Industri masih digunakan sebagai tempat PKL, tidak bisa dihapus.',
+                        ]);
+                    }
+                }),
         ];
     }
 

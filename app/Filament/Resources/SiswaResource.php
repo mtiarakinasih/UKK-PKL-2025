@@ -4,6 +4,8 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\SiswaResource\Pages;
 use App\Models\Siswa;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -18,14 +20,25 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\SiswaImport;
 use Illuminate\Validation\Rule;
 use Filament\Tables\Columns\BadgeColumn;
+use Filament\Support\Exceptions\Halt; // Tambahkan ini
 
 class SiswaResource extends Resource
 {
     protected static ?string $navigationLabel = 'Daftar Siswa';
     protected static ?string $pluralLabel = 'Kelola Data Siswa';
-    protected static ?string $label = 'Guru';
     protected static ?string $model = Siswa::class;
     protected static ?string $navigationIcon = 'heroicon-o-user';
+
+    protected static function afterCreate($record): void
+    {
+        User::create([
+            'name' => $record->nama,
+            'email' => $record->nis . '@siswasija.com',
+            'password' => Hash::make('siswasija123'),
+            'role' => 'siswa',
+            'related_id' => $record->id,
+        ]);
+    }
 
     public static function form(Form $form): Form
     {
@@ -105,13 +118,13 @@ class SiswaResource extends Resource
                 Tables\Columns\TextColumn::make('status_pkl'),
                 ImageColumn::make('foto')->circular(),
                 BadgeColumn::make('status_pkl')
-                ->label('Status')
-                ->formatStateUsing(fn (bool $state) => $state ? 'Terlapor' : 'Belum Terlapor')
-                ->colors([
-                    'success' => fn ($state) => $state === true,
-                    'danger' => fn ($state) => $state === false,
-                ])
-                ->sortable(),
+                    ->label('Status')
+                    ->formatStateUsing(fn (bool $state) => $state ? 'Terlapor' : 'Belum Terlapor')
+                    ->colors([
+                        'success' => fn ($state) => $state === true,
+                        'danger' => fn ($state) => $state === false,
+                    ])
+                    ->sortable(),
             ])
             ->headerActions([
                 Action::make('Import CSV')
@@ -139,7 +152,20 @@ class SiswaResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                        ->before(function ($records) {
+                            foreach ($records as $record) {
+                                if ($record->pkl) {
+                                    \Filament\Notifications\Notification::make()
+                                        ->title("Gagal Menghapus")
+                                        ->body("Beberapa siswa tidak bisa dihapus karena sedang mengikuti PKL.")
+                                        ->danger()
+                                        ->send();
+
+                                    throw new Halt();
+                                }
+                            }
+                        }),
                 ]),
             ]);
     }
@@ -156,10 +182,8 @@ class SiswaResource extends Resource
 
     public static function getNavigationGroup(): ?string
     {
-        return 'Sumber Daya Manusia'; 
+        return 'Sumber Daya Manusia';
     }
-
-
 
     public static function getRelations(): array
     {

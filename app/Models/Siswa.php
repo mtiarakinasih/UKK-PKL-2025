@@ -57,5 +57,9 @@ class Siswa extends Model
     {
         return $this->hasOne(Pkl::class); // 1 siswa hanya 1 pkl
     }
-
+    
+    public function user()
+    {
+        return $this->hasOne(User::class, 'related_id')->where('role', 'siswa');
+    }
 }

@@ -17,6 +17,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Imports\GuruImport;
 use Illuminate\Support\Facades\Storage;
 use Filament\Notifications\Notification;
+use Filament\Support\Exceptions\Halt;
 
 class GuruResource extends Resource
 {
@@ -110,7 +111,20 @@ class GuruResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()
+                    ->before(function ($records) {
+                        foreach ($records as $record) {
+                            if ($record->pkls()->exists()) {
+                                \Filament\Notifications\Notification::make()
+                                    ->title("Gagal Menghapus")
+                                    ->body("Guru sedang membimbing PKL.")
+                                    ->danger()
+                                    ->send();
+
+                                throw new Halt(); // Ini yang benar untuk menghentikan proses
+                            }
+                        }
+                    }),
                 ]),
             ]);
     }

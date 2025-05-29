@@ -3,33 +3,44 @@
 namespace App\Imports;
 
 use App\Models\Siswa;
-use Maatwebsite\Excel\Concerns\ToModel;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
+use Maatwebsite\Excel\Concerns\OnEachRow;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Row;
 
-class SiswaImport implements ToModel, WithHeadingRow
+class SiswaImport implements OnEachRow, WithHeadingRow
 {
-    public function model(array $row)
+    public function onRow(Row $row)
     {
+        $row = $row->toArray();
+
         $email = $row['nis'] . '@siswasija.com';
 
-        // Cek duplikat berdasarkan NIS atau email
         if (Siswa::where('nis', $row['nis'])->orWhere('email', $email)->exists()) {
-            return null;
+            return; // skip duplikat
         }
 
-        // Validasi gender harus 'L' atau 'P'
         $gender = strtoupper(trim($row['gender']));
         if (!in_array($gender, ['L', 'P'])) {
-            return null; // Skip jika gender tidak valid
+            return; // skip gender invalid
         }
 
-        return new Siswa([
+        $siswa = Siswa::create([
             'nama'      => $row['nama'],
             'nis'       => $row['nis'],
             'alamat'    => $row['alamat'],
             'kontak'    => $row['kontak'],
             'email'     => $email,
             'gender'    => $gender,
+        ]);
+
+        User::create([
+            'name' => $siswa->nama,
+            'email' => $siswa->nis . '@siswasija.com',
+            'password' => Hash::make('siswasija123'),
+            'role' => 'siswa',
+            'related_id' => $siswa->id,
         ]);
     }
 }

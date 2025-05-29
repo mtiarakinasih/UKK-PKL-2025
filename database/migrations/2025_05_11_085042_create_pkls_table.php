@@ -14,16 +14,15 @@ return new class extends Migration
         Schema::create('pkls', function (Blueprint $table) {
             $table->id();
             
-            $table->foreignId('siswa_id')->constrained('siswas')->onDelete('cascade');
-            $table->foreignId('guru_id')->constrained('gurus')->onDelete('cascade');
-            $table->foreignId('industri_id')->constrained('industris')->onDelete('cascade');
+            $table->foreignId('siswa_id')->constrained('siswas')->onDelete('restrict');
+            $table->foreignId('guru_id')->constrained('gurus')->onDelete('restrict');
+            $table->foreignId('industri_id')->constrained('industris')->onDelete('restrict');
             
             $table->date('mulai');
             $table->date('selesai');
         
             $table->timestamps();
         });
-        
     }
 
     /**
@@ -32,10 +31,11 @@ return new class extends Migration
     public function down()
     {
         Schema::table('pkls', function (Blueprint $table) {
-            $table->dropForeign(['industri_id']); // Drop foreign key
+            $table->dropForeign(['siswa_id']);
+            $table->dropForeign(['guru_id']);
+            $table->dropForeign(['industri_id']);
         });
 
-        Schema::dropIfExists('pkls'); // Drop table pkls
+        Schema::dropIfExists('pkls');
     }
-
 };
