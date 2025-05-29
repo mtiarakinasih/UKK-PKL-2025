@@ -30,8 +30,8 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
 
 // Dashboard khusus siswa dan guru
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
-    Route::get('/guru/dashboard', fn () => Inertia::render('Guru/Dashboard'));
-    Route::get('/siswa/dashboard', [PklController::class, 'index']);
+    Route::get('/guru/dashboard', fn () => Inertia::render('Guru/Dashboard'))->name('guru.dashboard');
+    Route::get('/siswa/dashboard', [PklController::class, 'index'])->name('siswa.dashboard');
     Route::get('/siswa/industri', fn () => Inertia::render('Siswa/Industri'))->name('siswa.industri');
     Route::get('/siswa/profil', fn () => Inertia::render('Siswa/Profil'))->name('siswa.profil');
 });

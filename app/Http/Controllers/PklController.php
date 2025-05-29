@@ -17,10 +17,12 @@ class PklController extends Controller
     $query = Pkl::with(['siswa', 'industri', 'guru']);
 
     if ($search) {
-        $query->whereHas('siswa', function ($q) use ($search) {
-            $q->where('nama', 'like', '%' . $search . '%');
-        })->orWhereHas('industri', function ($q) use ($search) {
-            $q->where('nama', 'like', '%' . $search . '%');
+        $query->where(function ($q) use ($search) {
+            $q->whereHas('siswa', function ($q2) use ($search) {
+                $q2->where('nama', 'like', '%' . $search . '%');
+            })->orWhereHas('industri', function ($q2) use ($search) {
+                $q2->where('nama', 'like', '%' . $search . '%');
+            });
         });
     }
 

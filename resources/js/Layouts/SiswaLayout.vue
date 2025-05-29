@@ -7,70 +7,48 @@
         <Link
           href="/dashboard"
           class="flex items-center gap-2 py-2 px-4 rounded hover:bg-gray-200"
-          :class="route().current('dashboard') && 'bg-gray-200 font-semibold'"
+          :class="route().current('siswa.dashboard') ? 'bg-gray-200 font-semibold text-blue-600' : 'text-gray-700'"
         >
-          <!-- Home icon -->
-          <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M3 9.75L12 4l9 5.75v8.25A2.25 2.25 0 0118.75 20H5.25A2.25 2.25 0 013 18V9.75z" />
-          </svg>
+          <HomeIcon class="w-5 h-5" :class="route().current('siswa.dashboard') ? 'text-blue-600' : 'text-gray-500'" />
           Home
         </Link>
 
         <Link
           href="/siswa/industri"
           class="flex items-center gap-2 py-2 px-4 rounded hover:bg-gray-200"
-          :class="route().current('siswa.industri') && 'bg-gray-200 font-semibold'"
+          :class="route().current('siswa.industri') ? 'bg-gray-200 font-semibold text-blue-600' : 'text-gray-700'"
         >
-          <!-- Industri icon -->
-          <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M4 21h16M4 10h16M4 6h16M9 21V6m6 15V6" />
-          </svg>
+          <BuildingOfficeIcon class="w-5 h-5" :class="route().current('siswa.industri') ? 'text-blue-600' : 'text-gray-500'" />
           Industri
         </Link>
       </nav>
 
-      <!-- Profil di paling bawah desktop -->
+      <!-- Profil Desktop -->
       <div class="mt-auto relative">
         <button
-          @click="isProfileOpen = !isProfileOpen"
+          @click="toggleProfile"
           class="w-full flex items-center justify-between px-4 py-2 rounded hover:bg-gray-100"
         >
           <div class="flex items-center gap-2">
-            <!-- Avatar icon -->
-            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M5.121 17.804A7.5 7.5 0 0112 15a7.5 7.5 0 016.879 2.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
-            </svg>
+            <UserCircleIcon class="w-6 h-6 text-gray-600" />
             <span class="text-sm text-gray-700 font-medium truncate">{{ user.name }}</span>
           </div>
-          <!-- Dropdown arrow -->
-          <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M19 9l-7 7-7-7" />
-          </svg>
+          <ChevronDownIcon class="w-4 h-4 text-gray-500" />
         </button>
 
         <div
-          v-if="isProfileOpen"
+          v-if="isProfileOpen && !isMobile"
           class="absolute bottom-14 left-4 right-4 bg-white border rounded shadow z-50"
         >
           <Link href="/siswa/profil" class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100">
-            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M5.121 17.804A7.5 7.5 0 0112 15a7.5 7.5 0 016.879 2.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
-            </svg>
+            <UserCircleIcon class="w-5 h-5 text-gray-500" />
             Profil
           </Link>
           <button
             @click="logout"
             class="flex items-center gap-2 w-full px-4 py-2 text-red-600 hover:bg-red-100"
           >
-            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-10V5" />
-            </svg>
+            <ArrowRightOnRectangleIcon class="w-5 h-5 text-red-500" />
             Logout
           </button>
         </div>
@@ -82,83 +60,102 @@
       <slot />
     </main>
 
-    <!-- Bottom Navbar untuk Mobile -->
+    <!-- Bottom Navbar Mobile -->
     <nav
-      class="fixed bottom-0 left-0 right-0 bg-white shadow-inner border-t border-gray-200 flex justify-around items-center md:hidden h-14"
+      class="fixed bottom-0 left-0 right-0 bg-white shadow-inner border-t border-gray-200 flex justify-around items-center md:hidden h-14 z-40"
     >
       <Link
         href="/dashboard"
-        class="flex flex-col items-center justify-center text-gray-600 hover:text-blue-600"
-        :class="route().current('dashboard') && 'text-blue-600'"
+        class="flex flex-col items-center justify-center py-2 px-3"
+        :class="route().current('siswa.dashboard') ? 'bg-gray-200 font-semibold text-blue-600' : 'text-gray-700'"
       >
-        <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M3 9.75L12 4l9 5.75v8.25A2.25 2.25 0 0118.75 20H5.25A2.25 2.25 0 013 18V9.75z" />
-        </svg>
+        <HomeIcon class="w-5 h-5" :class="route().current('siswa.dashboard') ? 'text-blue-600' : 'text-gray-500'" />
         <span class="text-xs">Home</span>
       </Link>
 
       <Link
         href="/siswa/industri"
-        class="flex flex-col items-center justify-center text-gray-600 hover:text-blue-600"
-        :class="route().current('siswa.industri') && 'text-blue-600'"
+        class="flex flex-col items-center justify-center py-2 px-3"
+        :class="route().current('siswa.industri') ? 'text-blue-600 font-semibold' : 'text-gray-700'"
       >
-        <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-            d="M4 21h16M4 10h16M4 6h16M9 21V6m6 15V6" />
-        </svg>
+        <BuildingOfficeIcon class="w-6 h-6 mb-0.5" :class="route().current('siswa.industri') ? 'text-blue-600' : 'text-gray-500'" />
         <span class="text-xs">Industri</span>
       </Link>
 
-      <div class="relative">
-        <button
-          @click="isProfileOpen = !isProfileOpen"
-          class="flex flex-col items-center justify-center text-gray-600 hover:text-blue-600 focus:outline-none"
-        >
-          <svg class="w-6 h-6 mb-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M5.121 17.804A7.5 7.5 0 0112 15a7.5 7.5 0 016.879 2.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
-          </svg>
-          <span class="text-xs truncate max-w-[70px]">{{ user.name }}</span>
-        </button>
-
-        <div
-          v-if="isProfileOpen"
-          class="absolute bottom-14 left-0 right-0 bg-white border rounded shadow z-50"
-        >
-          <Link href="/siswa/profil" class="flex items-center gap-2 px-4 py-2 hover:bg-gray-100">
-            <svg class="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M5.121 17.804A7.5 7.5 0 0112 15a7.5 7.5 0 016.879 2.804M12 12a4 4 0 100-8 4 4 0 000 8z" />
-            </svg>
-            Profil
-          </Link>
-          <button
-            @click="logout"
-            class="flex items-center gap-2 w-full px-4 py-2 text-red-600 hover:bg-red-100"
-          >
-            <svg class="w-5 h-5 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1m0-10V5" />
-            </svg>
-            Logout
-          </button>
-        </div>
-      </div>
+      <button
+        @click="toggleProfile"
+        class="flex flex-col items-center justify-center text-gray-600 hover:text-blue-600 focus:outline-none py-2 px-3"
+      >
+        <UserCircleIcon class="w-6 h-6 mb-0.5" />
+        <span class="text-xs truncate max-w-[70px]">{{ user.name }}</span>
+      </button>
     </nav>
+
+    <!-- Modal Dropdown untuk Mobile -->
+    <div
+      v-if="isProfileOpen && isMobile"
+      class="fixed inset-0 bg-black bg-opacity-40 flex items-end z-50 md:hidden"
+      @click.self="isProfileOpen = false"
+    >
+      <div class="bg-white w-full rounded-t-lg shadow-lg py-4 px-6">
+        <p class="text-sm text-gray-500 mb-2">Masuk sebagai:</p>
+        <div class="flex items-center gap-2 mb-4">
+          <UserCircleIcon class="w-6 h-6 text-gray-700" />
+          <span class="font-medium">{{ user.name }}</span>
+        </div>
+
+        <Link href="/siswa/profil" class="flex items-center gap-2 py-2 hover:bg-gray-100 rounded px-2">
+          <UserCircleIcon class="w-5 h-5 text-gray-500" />
+          Profil
+        </Link>
+
+        <button
+          @click="logout"
+          class="flex items-center gap-2 w-full py-2 text-red-600 hover:bg-red-100 rounded px-2 mt-2"
+        >
+          <ArrowRightOnRectangleIcon class="w-5 h-5 text-red-500" />
+          Logout
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import {
+  HomeIcon,
+  BuildingOfficeIcon,
+  UserCircleIcon,
+  ChevronDownIcon,
+  ArrowRightOnRectangleIcon
+} from '@heroicons/vue/24/outline'
+
+import { ref, onMounted, onBeforeUnmount } from 'vue'
 import { router, Link, usePage } from '@inertiajs/vue3'
 
 const isProfileOpen = ref(false)
-
+const isMobile = ref(false)
 const { props } = usePage()
 const user = props.auth.user
 
 function logout() {
   router.post('/logout')
 }
+
+function toggleProfile() {
+  isProfileOpen.value = !isProfileOpen.value
+}
+
+function handleResize() {
+  isMobile.value = window.innerWidth < 768
+}
+
+onMounted(() => {
+  handleResize()
+  window.addEventListener('resize', handleResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize)
+})
 </script>
