@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PklResource\Pages;
 use App\Filament\Resources\PklResource\RelationManagers;
-use App\Models\Pkl;
+use App\Models\PKL;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;

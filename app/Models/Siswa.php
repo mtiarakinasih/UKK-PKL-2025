@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Validation\Rule;
 
-
 class Siswa extends Model
 {
     use HasFactory;
@@ -20,6 +19,7 @@ class Siswa extends Model
         'email',
         'password',
         'foto',
+        'user_id'
     ];
 
     public static function rules($id = null)
@@ -55,11 +55,11 @@ class Siswa extends Model
 
     public function pkl()
     {
-        return $this->hasOne(Pkl::class); // 1 siswa hanya 1 pkl
+        return $this->hasOne(Pkl::class);
     }
     
     public function user()
     {
-        return $this->hasOne(User::class, 'related_id')->where('role', 'siswa');
+        return $this->belongsTo(User::class);
     }
 }

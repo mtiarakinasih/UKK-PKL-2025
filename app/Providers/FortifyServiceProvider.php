@@ -15,7 +15,6 @@ use Laravel\Fortify\Fortify;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
 
-
 class FortifyServiceProvider extends ServiceProvider
 {
     /**
@@ -31,46 +30,47 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Fortify::createUsersUsing(CreateNewUser::class);
+        Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
+        Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);
+        Fortify::resetUserPasswordsUsing(ResetUserPassword::class);
 
         RateLimiter::for('login', function (Request $request) {
-        $email = (string) $request->email;
-
-        return Limit::perMinute(5)->by($email . $request->ip());
+            $email = (string) $request->email;
+            return Limit::perMinute(5)->by($email . $request->ip());
         });
 
         Fortify::authenticateUsing(function (Request $request) {
-        $user = \App\Models\User::where('email', $request->email)->first();
+            $user = \App\Models\User::where('email', $request->email)->first();
 
-        if (!$user) {
+            if (!$user) {
+                throw ValidationException::withMessages([
+                    'email' => 'Email tidak ditemukan.',
+                ]);
+            }
+
+            if ($user->role === 'guru' && !str_ends_with($user->email, '@gurusija.com')) {
+                throw ValidationException::withMessages([
+                    'email' => 'Guru hanya boleh pakai email @gurusija.com',
+                ]);
+            }
+
+            if ($user->role === 'siswa' && !str_ends_with($user->email, '@siswasija.com')) {
+                throw ValidationException::withMessages([
+                    'email' => 'Siswa hanya boleh pakai email @siswasija.com',
+                ]);
+            }
+
+            if (Auth::attempt([
+                'email' => $request->email,
+                'password' => $request->password,
+            ], $request->remember)) {
+                return Auth::user();
+            }
+
             throw ValidationException::withMessages([
-                'email' => 'Email tidak ditemukan.',
+                'email' => 'Email atau password salah.',
             ]);
-        }
-
-        // Validasi email domain berdasarkan role
-        if ($user->role === 'guru' && !str_ends_with($user->email, '@gurusija.com')) {
-            throw ValidationException::withMessages([
-                'email' => 'Guru hanya boleh pakai email @gurusija.com',
-            ]);
-        }
-
-        if ($user->role === 'siswa' && !str_ends_with($user->email, '@siswasija.com')) {
-            throw ValidationException::withMessages([
-                'email' => 'Siswa hanya boleh pakai email @siswasija.com',
-            ]);
-        }
-
-        // Autentikasi Laravel
-        if (Auth::attempt([
-            'email' => $request->email,
-            'password' => $request->password,
-        ], $request->remember)) {
-            return Auth::user();
-        }
-
-        throw ValidationException::withMessages([
-            'email' => 'Email atau password salah.',
-        ]);
-    });
-}
+        });
+    }
 }
