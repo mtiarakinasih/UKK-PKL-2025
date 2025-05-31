@@ -81,20 +81,20 @@ class SiswaResource extends Resource
                 ->label('Kontak Telepon')
                 ->tel(),
 
-            TextInput::make('email')
-                ->label('Email')
-                ->helperText('Gunakan format: <nis>@siswasija.com')
-                ->disabled()
-                ->reactive()
-                ->default(fn ($get) => $get('nis') ? $get('nis') . '@siswasija.com' : null)
-                ->rules([
-                    'regex:/^[0-9]+@siswasija\.com$/',
-                    fn ($get, $record) => Rule::unique('siswas', 'email')->ignore($record?->id),
-                ])
-                ->validationMessages([
-                    'regex' => 'Email harus menggunakan domain @siswasija.com dan format <nis>@siswasija.com.',
-                    'unique' => 'Email ini sudah digunakan.',
-                ]),
+            // TextInput::make('email')
+            //     ->label('Email')
+            //     ->helperText('Gunakan format: <nis>@siswasija.com')
+            //     ->disabled()
+            //     ->reactive()
+            //     ->default(fn ($get) => $get('nis') ? $get('nis') . '@siswasija.com' : null)
+            //     ->rules([
+            //         'regex:/^[0-9]+@siswasija\.com$/',
+            //         fn ($get, $record) => Rule::unique('siswas', 'email')->ignore($record?->id),
+            //     ])
+            //     ->validationMessages([
+            //         'regex' => 'Email harus menggunakan domain @siswasija.com dan format <nis>@siswasija.com.',
+            //         'unique' => 'Email ini sudah digunakan.',
+            //     ]),
 
             FileUpload::make('foto')
                 ->label('Foto Siswa')

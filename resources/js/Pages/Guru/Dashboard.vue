@@ -1,11 +1,11 @@
 <template>
   <GuruLayout>
     <div class="space-y-6">
-      <div class="bg-gradient-to-r from-green-600 to-teal-700 rounded-xl p-6 shadow-md">
+      <div class="bg-gradient-to-r from-blue-600 to-blue-700 rounded-xl p-6 shadow-md">
         <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
           <div>
             <h1 class="text-2xl font-bold text-white mb-2">Dashboard Guru</h1>
-            <p class="text-green-100">Monitoring siswa PKL</p>
+            <p class="text-blue-100">Monitoring siswa PKL</p>
           </div>
           <div class="flex gap-2">
             <div class="relative">
@@ -13,7 +13,7 @@
                 type="search"
                 v-model="search"
                 placeholder="Cari siswa..."
-                class="w-full md:w-64 pl-10 pr-4 py-2 text-sm bg-white/20 backdrop-blur-sm text-white placeholder-green-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50"
+                class="w-full md:w-64 pl-10 pr-4 py-2 text-sm bg-white/20 backdrop-blur-sm text-white placeholder-blue-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-white/50"
               />
               <MagnifyingGlassIcon class="w-5 h-5 text-white absolute left-3 top-2.5" />
             </div>
@@ -25,14 +25,14 @@
         <button 
           @click="activeFilter = 'all'" 
           class="px-4 py-2 rounded-lg transition-colors font-medium"
-          :class="activeFilter === 'all' ? 'bg-green-100 text-green-700' : 'text-gray-600 hover:bg-gray-100'"
+          :class="activeFilter === 'all' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100'"
         >
           Semua Siswa
         </button>
         <button 
           @click="activeFilter = 'active'" 
           class="px-4 py-2 rounded-lg transition-colors font-medium ml-2"
-          :class="activeFilter === 'active' ? 'bg-green-100 text-green-700' : 'text-gray-600 hover:bg-gray-100'"
+          :class="activeFilter === 'active' ? 'bg-blue-100 text-blue-700' : 'text-gray-600 hover:bg-gray-100'"
         >
           Sedang PKL
         </button>
@@ -42,8 +42,8 @@
         <div class="bg-white rounded-xl shadow-sm p-6">
           <div class="flex items-center justify-between">
             <h3 class="text-lg font-semibold text-gray-800">Total Siswa</h3>
-            <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-              <UserGroupIcon class="w-6 h-6 text-green-600" />
+            <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+              <UserGroupIcon class="w-6 h-6 text-blue-600" />
             </div>
           </div>
           <p class="text-3xl font-bold mt-4 mb-1">{{ stats.totalStudents }}</p>
@@ -127,7 +127,7 @@
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <button 
                     @click="showStudentDetail(student)"
-                    class="text-green-600 hover:text-green-900"
+                    class="text-blue-600 hover:text-blue-900"
                     :disabled="!student.pkl"
                     :class="{'opacity-50 cursor-not-allowed': !student.pkl}"
                   >
@@ -191,7 +191,7 @@
             <button 
               v-if="student.pkl"
               @click="showStudentDetail(student)"
-              class="mt-3 w-full py-2 bg-green-50 text-green-700 rounded-lg flex items-center justify-center font-medium"
+              class="mt-3 w-full py-2 bg-blue-50 text-blue-700 rounded-lg flex items-center justify-center font-medium"
             >
               <EyeIcon class="w-4 h-4 mr-2" />
               Lihat Detail
@@ -284,7 +284,7 @@
                     <a 
                       :href="formatWebsiteUrl(selectedStudent.pkl.industri_detail.website)" 
                       target="_blank"
-                      class="text-green-600 hover:underline font-medium"
+                      class="text-blue-600 hover:underline font-medium"
                     >
                       {{ selectedStudent.pkl.industri_detail.website }}
                     </a>

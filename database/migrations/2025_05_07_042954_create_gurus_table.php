@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('nip')->unique();
             $table->enum('gender', ['L', 'P']);
             $table->text('alamat');
-            $table->string('password')->default('gurusija123');
             $table->string('kontak');
             $table->string('email')->unique();
             $table->timestamps();

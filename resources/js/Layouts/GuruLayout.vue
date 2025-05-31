@@ -9,16 +9,16 @@
         <Link
           href="/guru/dashboard"
           class="flex items-center gap-3 py-2.5 px-4 rounded-lg transition-all duration-200 group"
-          :class="route().current('guru.dashboard') ? 'bg-green-50 text-green-600' : 'text-slate-700 hover:bg-slate-100'"
+          :class="route().current('guru.dashboard') ? 'bg-blue-50 text-blue-600' : 'text-slate-700 hover:bg-slate-100'"
         >
           <HomeIcon 
             class="w-5 h-5 transition-colors" 
-            :class="route().current('guru.dashboard') ? 'text-green-600' : 'text-slate-500 group-hover:text-green-500'" 
+            :class="route().current('guru.dashboard') ? 'text-blue-600' : 'text-slate-500 group-hover:text-blue-500'" 
           />
           <span class="font-medium">Home</span>
           <div 
             class="ml-auto h-2 w-2 rounded-full transition-all" 
-            :class="route().current('guru.dashboard') ? 'bg-green-500' : 'bg-transparent'"
+            :class="route().current('guru.dashboard') ? 'bg-blue-500' : 'bg-transparent'"
           ></div>
         </Link>
       </nav>
@@ -30,8 +30,8 @@
             @click="toggleUserMenu"
             class="flex items-center gap-3 w-full px-4 py-3 hover:bg-slate-100 transition-colors rounded-lg"
           >
-            <div class="h-8 w-8 rounded-full bg-green-100 flex items-center justify-center">
-              <UserCircleIcon class="w-6 h-6 text-green-600" />
+            <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+              <UserCircleIcon class="w-6 h-6 text-blue-600" />
             </div>
             <div class="text-left overflow-hidden">
               <span class="text-sm font-medium text-slate-800 block truncate">{{ user.name }}</span>
@@ -66,13 +66,13 @@
       <Link
         href="/guru/dashboard"
         class="flex flex-col items-center justify-center py-2 px-3 rounded-lg transition-all"
-        :class="route().current('guru.dashboard') ? 'text-green-600' : 'text-slate-600'"
+        :class="route().current('guru.dashboard') ? 'text-blue-600' : 'text-slate-600'"
       >
         <div class="relative">
-          <HomeIcon class="w-6 h-6" :class="route().current('guru.dashboard') ? 'text-green-600' : 'text-slate-500'" />
+          <HomeIcon class="w-6 h-6" :class="route().current('guru.dashboard') ? 'text-blue-600' : 'text-slate-500'" />
           <div 
             v-if="route().current('guru.dashboard')" 
-            class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 h-1 w-4 bg-green-500 rounded-full"
+            class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 h-1 w-4 bg-blue-500 rounded-full"
           ></div>
         </div>
         <span class="text-xs mt-1 font-medium">Home</span>
@@ -81,13 +81,13 @@
       <Link
         href="/guru/bimbingan"
         class="flex flex-col items-center justify-center py-2 px-3 rounded-lg transition-all"
-        :class="route().current('guru.bimbingan') ? 'text-green-600' : 'text-slate-600'"
+        :class="route().current('guru.bimbingan') ? 'text-blue-600' : 'text-slate-600'"
       >
         <div class="relative">
-          <UserGroupIcon class="w-6 h-6" :class="route().current('guru.bimbingan') ? 'text-green-600' : 'text-slate-500'" />
+          <UserGroupIcon class="w-6 h-6" :class="route().current('guru.bimbingan') ? 'text-blue-600' : 'text-slate-500'" />
           <div 
             v-if="route().current('guru.bimbingan')" 
-            class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 h-1 w-4 bg-green-500 rounded-full"
+            class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 h-1 w-4 bg-blue-500 rounded-full"
           ></div>
         </div>
         <span class="text-xs mt-1 font-medium">Bimbingan</span>
@@ -96,13 +96,13 @@
       <Link
         href="/guru/industri"
         class="flex flex-col items-center justify-center py-2 px-3 rounded-lg transition-all"
-        :class="route().current('guru.industri') ? 'text-green-600' : 'text-slate-600'"
+        :class="route().current('guru.industri') ? 'text-blue-600' : 'text-slate-600'"
       >
         <div class="relative">
-          <BuildingOfficeIcon class="w-6 h-6" :class="route().current('guru.industri') ? 'text-green-600' : 'text-slate-500'" />
+          <BuildingOfficeIcon class="w-6 h-6" :class="route().current('guru.industri') ? 'text-blue-600' : 'text-slate-500'" />
           <div 
             v-if="route().current('guru.industri')" 
-            class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 h-1 w-4 bg-green-500 rounded-full"
+            class="absolute -bottom-1 left-1/2 transform -translate-x-1/2 h-1 w-4 bg-blue-500 rounded-full"
           ></div>
         </div>
         <span class="text-xs mt-1 font-medium">Industri</span>
@@ -116,8 +116,8 @@
     >
       <div class="bg-white w-full max-w-sm rounded-t-xl p-4 animate-slide-up">
         <div class="flex items-center gap-3 mb-4 pb-3 border-b border-slate-100">
-          <div class="h-10 w-10 rounded-full bg-green-100 flex items-center justify-center">
-            <UserCircleIcon class="w-7 h-7 text-green-600" />
+          <div class="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
+            <UserCircleIcon class="w-7 h-7 text-blue-600" />
           </div>
           <div>
             <p class="font-medium">{{ user.name }}</p>

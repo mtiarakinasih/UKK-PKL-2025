@@ -6,6 +6,8 @@ use App\Models\Industri;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
+
 
 class IndustriController extends Controller
 {
@@ -56,12 +58,33 @@ class IndustriController extends Controller
             'email' => 'nullable|email|max:255',
             'website' => 'nullable|string|max:255',
         ]);
-        
+
+        $normalize = function ($text) {
+            $text = strtolower($text);
+            $text = preg_replace('/\b(pt|cv|group|inc|ltd)\b/', '', $text);
+            $text = preg_replace('/[^a-z0-9]/', '', $text);
+            return trim($text);
+        };
+
+        $normalizedInput = $normalize($validated['nama']);
+        $existingIndustries = Industri::pluck('nama');
+
+        foreach ($existingIndustries as $existingNama) {
+            $normalizedExisting = $normalize($existingNama);
+            similar_text($normalizedInput, $normalizedExisting, $percent);
+
+            if ($percent > 85) {
+                throw ValidationException::withMessages([
+                    'nama' => "Nama industri terlalu mirip dengan \"$existingNama\".",
+                ]);
+            }
+        }
+
         Industri::create($validated);
-        
+
         return redirect()->route('siswa.industri')->with('message', 'Industri berhasil ditambahkan');
     }
-    
+
     public function getIndustries(Request $request)
     {
         $search = $request->input('search', '');

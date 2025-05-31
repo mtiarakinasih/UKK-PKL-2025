@@ -19,7 +19,6 @@ return new class extends Migration
             $table->text('alamat');
             $table->string('kontak');
             $table->string('email')->unique();
-            $table->string('password')->default('siswasija123');
             $table->boolean('status_pkl')->default(false);
             $table->string('foto')->nullable();
             $table->timestamps();
