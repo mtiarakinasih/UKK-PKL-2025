@@ -74,13 +74,13 @@
           </div>
           
           <div class="bg-gray-50 px-6 py-3 border-t border-gray-100">
-            <Link
-              :href="`/siswa/pkl/add?industri=${industri.id}`"
-              class="flex justify-between items-center text-blue-600 text-sm font-medium hover:text-blue-800 transition-colors"
+            <button
+              @click="openPklModal(industri)"
+              class="flex justify-between items-center w-full text-blue-600 text-sm font-medium hover:text-blue-800 transition-colors"
             >
               <span>Pilih untuk PKL</span>
               <ArrowRightIcon class="w-4 h-4" />
-            </Link>
+            </button>
           </div>
         </div>
       </div>
@@ -214,13 +214,124 @@
           </form>
         </div>
       </div>
+      
+      <div v-if="showPklModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+        <div class="bg-white rounded-xl shadow-xl max-w-lg w-full max-h-[90vh] overflow-y-auto">
+          <div class="p-6 border-b border-gray-200">
+            <div class="flex justify-between items-center">
+              <h2 class="text-xl font-bold text-gray-800">Tambah Data PKL</h2>
+              <button @click="showPklModal = false" class="text-gray-500 hover:text-gray-700">
+                <XMarkIcon class="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+          
+          <form @submit.prevent="submitPkl" class="p-6 space-y-5">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 mb-1">
+                Industri / Tempat PKL
+              </label>
+              <div class="bg-gray-50 p-3 rounded-md border border-gray-200">
+                <div class="font-medium text-gray-800">{{ selectedIndustri?.nama }}</div>
+                <div class="text-sm text-gray-600">{{ selectedIndustri?.bidang_usaha }}</div>
+                <div class="text-sm text-gray-600 mt-1">{{ selectedIndustri?.alamat }}</div>
+              </div>
+            </div>
+            
+            <div>
+              <label for="guru_id" class="block text-sm font-medium text-gray-700 mb-1">
+                Guru Pembimbing <span class="text-red-500">*</span>
+              </label>
+              <select
+                v-model="pklForm.guru_id"
+                id="guru_id"
+                class="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm"
+                :class="{ 'border-red-500': pklForm.errors.guru_id }"
+                required
+              >
+                <option value="" disabled selected>Pilih Guru</option>
+                <option v-for="guru in gurus" :key="guru.id" :value="guru.id">
+                  {{ guru.nama }}
+                </option>
+              </select>
+              <div v-if="pklForm.errors.guru_id" class="text-sm text-red-600 mt-1">
+                {{ pklForm.errors.guru_id }}
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label for="mulai" class="block text-sm font-medium text-gray-700 mb-1">
+                  Tanggal Mulai <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model="pklForm.mulai"
+                  type="date"
+                  id="mulai"
+                  class="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm"
+                  :class="{ 'border-red-500': pklForm.errors.mulai }"
+                  required
+                />
+                <div v-if="pklForm.errors.mulai" class="text-sm text-red-600 mt-1">
+                  {{ pklForm.errors.mulai }}
+                </div>
+              </div>
+
+              <div>
+                <label for="selesai" class="block text-sm font-medium text-gray-700 mb-1">
+                  Tanggal Selesai <span class="text-red-500">*</span>
+                </label>
+                <input
+                  v-model="pklForm.selesai"
+                  type="date"
+                  id="selesai"
+                  class="w-full border-gray-300 focus:border-blue-500 focus:ring-blue-500 rounded-md shadow-sm"
+                  :class="{ 'border-red-500': pklForm.errors.selesai }"
+                  required
+                />
+                <div v-if="pklForm.errors.selesai" class="text-sm text-red-600 mt-1">
+                  {{ pklForm.errors.selesai }}
+                </div>
+              </div>
+            </div>
+
+            <div class="flex justify-end gap-3 pt-4">
+              <button
+                type="button"
+                @click="showPklModal = false"
+                class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md hover:bg-gray-300 transition-colors"
+              >
+                Batal
+              </button>
+              <button
+                type="submit"
+                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                :disabled="pklForm.processing"
+              >
+                <span v-if="pklForm.processing">Menyimpan...</span>
+                <span v-else>Simpan Data PKL</span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <div v-if="showAlert" class="fixed bottom-4 right-4 bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-lg shadow-md max-w-md">
+        <div class="flex items-center gap-2">
+          <ExclamationTriangleIcon class="w-5 h-5 text-red-600" />
+          <span class="font-medium">{{ alertMessage }}</span>
+        </div>
+        <button @click="showAlert = false" class="absolute top-2 right-2 text-red-500 hover:text-red-700">
+          <XMarkIcon class="w-5 h-5" />
+        </button>
+      </div>
     </div>
   </SiswaLayout>
 </template>
 
 <script setup>
 import { ref, computed } from 'vue'
-import { Link, useForm } from '@inertiajs/vue3'
+import { Link, useForm, router } from '@inertiajs/vue3'
 import SiswaLayout from '@/Layouts/SiswaLayout.vue'
 import { 
   MagnifyingGlassIcon, 
@@ -231,16 +342,23 @@ import {
   DocumentTextIcon,
   PlusIcon,
   ArrowRightIcon,
-  XMarkIcon
+  XMarkIcon,
+  ExclamationTriangleIcon
 } from '@heroicons/vue/24/outline'
 
 const props = defineProps({
   industries: Object,
-  filters: Object
+  filters: Object,
+  gurus: Array,
+  hasExistingPkl: Boolean
 })
 
 const search = ref(props.filters?.search || '')
 const showAddModal = ref(false)
+const showPklModal = ref(false)
+const showAlert = ref(false)
+const alertMessage = ref('')
+const selectedIndustri = ref(null)
 
 const form = useForm({
   nama: '',
@@ -249,6 +367,13 @@ const form = useForm({
   kontak: '',
   email: '',
   website: ''
+})
+
+const pklForm = useForm({
+  industri_id: '',
+  guru_id: '',
+  mulai: '',
+  selesai: '',
 })
 
 const filteredIndustries = computed(() => {
@@ -275,6 +400,40 @@ function submitIndustri() {
     onSuccess: () => {
       showAddModal.value = false
       form.reset()
+    }
+  })
+}
+
+function openPklModal(industri) {
+  if (props.hasExistingPkl) {
+    alertMessage.value = "Kamu sudah terdaftar PKL"
+    showAlert.value = true
+    setTimeout(() => {
+      showAlert.value = false
+    }, 5000)
+    return
+  }
+  
+  selectedIndustri.value = industri
+  pklForm.industri_id = industri.id
+  showPklModal.value = true
+}
+
+function submitPkl() {
+  pklForm.post('/siswa/pkl/store', {
+    onSuccess: () => {
+      showPklModal.value = false
+      pklForm.reset()
+      router.reload()
+    },
+    onError: (errors) => {
+      if (errors.message) {
+        alertMessage.value = errors.message
+        showAlert.value = true
+        setTimeout(() => {
+          showAlert.value = false
+        }, 5000)
+      }
     }
   })
 }

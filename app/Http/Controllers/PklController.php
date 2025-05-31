@@ -68,6 +68,25 @@ class PklController extends Controller
         ]);
     }
     
+    public function create(Request $request)
+{
+    $industriId = $request->input('industri');
+    $industri = null;
+    
+    if ($industriId) {
+        $industri = Industri::find($industriId);
+    }
+    
+    $industries = Industri::orderBy('nama')->get();
+    $gurus = Guru::orderBy('nama')->get();
+    
+    return Inertia::render('Siswa/PklAdd', [
+        'industri' => $industri,
+        'industries' => $industries,
+        'gurus' => $gurus,
+    ]);
+}
+
     public function store(Request $request)
     {
         $validated = $request->validate([
