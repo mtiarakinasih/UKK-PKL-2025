@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Industri;
+use App\Models\Guru;
+use App\Models\PKL;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-
 
 class IndustriController extends Controller
 {
@@ -31,11 +32,17 @@ class IndustriController extends Controller
                            ->paginate(9)
                            ->withQueryString();
         
+        $gurus = Guru::orderBy('nama')->get();
+        
+        $hasExistingPkl = Pkl::where('siswa_id', auth()->id())->exists();
+        
         return Inertia::render('Siswa/Industri', [
             'industries' => $industries,
             'filters' => [
                 'search' => $search ?? ''
-            ]
+            ],
+            'gurus' => $gurus,
+            'hasExistingPkl' => $hasExistingPkl
         ]);
     }
     
