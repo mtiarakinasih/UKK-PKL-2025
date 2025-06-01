@@ -22,12 +22,12 @@ Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified']
         };
     })->name('dashboard');
 
+Route::get('/api/industri', [IndustriController::class, 'getIndustries'])->name('api.industri');
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])->group(function () {
     Route::get('/guru/dashboard', [GuruController::class, 'dashboard'])->name('guru.dashboard');
     Route::get('/siswa/dashboard', [PklController::class, 'index'])->name('siswa.dashboard');
     Route::get('/siswa/industri', [IndustriController::class, 'index'])->name('siswa.industri'); 
     Route::get('/siswa/industri/{id}', [IndustriController::class, 'show'])->name('siswa.industri.show');
-    Route::get('/api/industri', [IndustriController::class, 'getIndustries'])->name('api.industri');
     Route::get('/siswa/profil', fn () => Inertia::render('Siswa/Profil'))->name('siswa.profil');
     Route::get('/siswa/pkl/add', [PklController::class, 'create'])->name('siswa.pkl.add');
     Route::post('/siswa/industri/store', [IndustriController::class, 'store'])->name('siswa.industri.store');

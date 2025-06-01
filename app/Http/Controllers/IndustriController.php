@@ -100,6 +100,6 @@ class IndustriController extends Controller
                       ->orWhere('bidang_usaha', 'like', "%{$search}%")
                       ->orderBy('nama')
                       ->limit(10)
-                      ->get(['id', 'nama', 'bidang_usaha']);
+                      ->get(['id', 'nama', 'bidang_usaha', 'alamat', 'kontak', 'email', 'website']);
     }
 }
