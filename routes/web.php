@@ -6,15 +6,9 @@ use Inertia\Inertia;
 use App\Http\Controllers\PklController;
 use App\Http\Controllers\IndustriController; 
 use App\Http\Controllers\GuruController;
+use App\Http\Controllers\WelcomeController;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion' => PHP_VERSION,
-    ]);
-});
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 
 Route::middleware(['auth:sanctum', config('jetstream.auth_session'), 'verified'])
     ->get('/dashboard', function () {
