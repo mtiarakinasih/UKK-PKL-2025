@@ -21,7 +21,7 @@ use Filament\Tables\Columns\ToggleColumn;
 class PklResource extends Resource
 {
     protected static ?string $navigationLabel = 'Daftar Terlapor PKL';
-    protected static ?string $model = Pkl::class;
+    protected static ?string $model = PKL::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-briefcase';
 
