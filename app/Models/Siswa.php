@@ -55,7 +55,7 @@ class Siswa extends Model
 
     public function pkl()
     {
-        return $this->hasOne(Pkl::class);
+        return $this->hasOne(PKL::class);
     }
     
     public function user()

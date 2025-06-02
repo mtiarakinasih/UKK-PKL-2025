@@ -37,7 +37,7 @@ class Guru extends Model
 
     public function pkls()
     {
-        return $this->hasMany(Pkl::class); // 1 guru membimbing banyak PKL
+        return $this->hasMany(PKL::class); // 1 guru membimbing banyak PKL
     }
 
     public function user()

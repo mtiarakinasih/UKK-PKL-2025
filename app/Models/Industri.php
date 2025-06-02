@@ -19,6 +19,6 @@ class Industri extends Model
 
     public function pkls()
     {
-        return $this->hasMany(Pkl::class); // 1 industri bisa diisi banyak siswa
+        return $this->hasMany(PKL::class); // 1 industri bisa diisi banyak siswa
     }
 }
