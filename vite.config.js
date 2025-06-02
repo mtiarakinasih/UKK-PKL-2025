@@ -17,4 +17,17 @@ export default defineConfig({
             },
         }),
     ],
+    server: {
+        host: '0.0.0.0',
+        hmr: {
+            host: 'ukk16.sija.local',
+        },
+        cors: {
+            origin: '*',
+            methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+            credentials: true
+        },
+        strictPort: true,
+        port: 5173
+    },
 });

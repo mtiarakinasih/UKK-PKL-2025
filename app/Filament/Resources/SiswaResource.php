@@ -112,8 +112,11 @@ class SiswaResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nama')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('nis')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('gender'),
+                Tables\Columns\TextColumn::make('nis')->sortable()->searchable()
+                    ->label('NIS'),
+                Tables\Columns\TextColumn::make('gender')
+                    ->label('Jenis Kelamin')
+                    ->formatStateUsing(fn ($state) => $state === 'L' ? 'Laki-laki' : 'Perempuan'),
                 Tables\Columns\TextColumn::make('email'),
                 Tables\Columns\TextColumn::make('status_pkl'),
                 ImageColumn::make('foto')->circular(),

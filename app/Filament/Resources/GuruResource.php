@@ -79,8 +79,11 @@ class GuruResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('nama')->sortable()->searchable(),
-                Tables\Columns\TextColumn::make('nip')->sortable(),
-                Tables\Columns\TextColumn::make('gender'),
+                Tables\Columns\TextColumn::make('nip')->sortable()
+                    ->label('NIP'),
+                Tables\Columns\TextColumn::make('gender')
+                    ->label('Jenis Kelamin')
+                    ->formatStateUsing(fn ($state) => $state === 'L' ? 'Laki-laki' : 'Perempuan'),
                 Tables\Columns\TextColumn::make('email')->searchable(),
             ])
             ->headerActions([
