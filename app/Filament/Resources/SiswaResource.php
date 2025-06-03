@@ -77,9 +77,20 @@ class SiswaResource extends Resource
                 ->label('Alamat'),
 
             TextInput::make('kontak')
-                ->required()
                 ->label('Kontak Telepon')
-                ->tel(),
+                ->required()
+                ->tel()
+                ->prefix('+62')
+                ->afterStateUpdated(function ($state, callable $set) {
+                    // Pastikan yang tersimpan di database pakai +62 di depan
+                    if (str_starts_with($state, '0')) {
+                        $set('kontak', '+62' . substr($state, 1));
+                    } elseif (!str_starts_with($state, '+62')) {
+                        // Kalau user input tanpa 0 atau +62, tambahkan +62 otomatis
+                        $set('kontak', '+62' . $state);
+                    }
+                }),
+
 
             // TextInput::make('email')
             //     ->label('Email')
@@ -118,6 +129,8 @@ class SiswaResource extends Resource
                     ->label('Jenis Kelamin')
                     ->formatStateUsing(fn ($state) => $state === 'L' ? 'Laki-laki' : 'Perempuan'),
                 Tables\Columns\TextColumn::make('email'),
+                Tables\Columns\TextColumn::make('kontak')
+                    ->label('Kontak Telepon'),
                 Tables\Columns\TextColumn::make('status_pkl'),
                 ImageColumn::make('foto')->circular(),
                 BadgeColumn::make('status_pkl')
@@ -155,20 +168,41 @@ class SiswaResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()
-                        ->before(function ($records) {
-                            foreach ($records as $record) {
-                                if ($record->pkl) {
-                                    \Filament\Notifications\Notification::make()
-                                        ->title("Gagal Menghapus")
-                                        ->body("Beberapa siswa tidak bisa dihapus karena sedang mengikuti PKL.")
-                                        ->danger()
-                                        ->send();
+                   Tables\Actions\DeleteBulkAction::make()
+                    ->action(function ($records, $data) {
+                        $undeletedNames = [];
 
-                                    throw new Halt();
-                                }
+                        foreach ($records as $record) {
+                            if ($record->pkl) {
+                                $undeletedNames[] = $record->nama;
+                                continue;
                             }
-                        }),
+
+                            // Hapus user terkait dulu
+                            $user = User::where('related_id', $record->id)
+                                        ->where('role', 'siswa')
+                                        ->first();
+
+                            if ($user) {
+                                $user->delete();
+                            }
+
+                            $record->delete();
+                        }
+
+                        if (count($undeletedNames)) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Sebagian siswa tidak bisa dihapus')
+                                ->body('Siswa berikut tidak dihapus karena sedang mengikuti PKL: ' . implode(', ', $undeletedNames))
+                                ->danger()
+                                ->send();
+                        } else {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Berhasil menghapus semua siswa yang dipilih')
+                                ->success()
+                                ->send();
+                        }
+                    }),
                 ]),
             ]);
     }

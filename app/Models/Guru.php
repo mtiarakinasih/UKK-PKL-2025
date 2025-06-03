@@ -44,4 +44,14 @@ class Guru extends Model
     {
         return $this->hasOne(User::class, 'related_id')->where('role', 'guru');
     }
+
+    protected static function booted()
+    {
+        static::deleting(function ($guru) {
+            User::where('related_id', $guru->id)
+                ->where('role', 'guru') // kalau mau pastikan hanya user role 'guru' yang dihapus
+                ->delete();
+        });
+    }
+
 }

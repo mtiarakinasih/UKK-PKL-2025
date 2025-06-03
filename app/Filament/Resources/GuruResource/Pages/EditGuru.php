@@ -8,6 +8,7 @@ use Filament\Resources\Pages\EditRecord;
 use Filament\Notifications\Notification;
 use Filament\Forms\ValidationException;
 use Filament\Support\Exceptions\Halt;
+use App\Models\User;
 
 class EditGuru extends EditRecord
 {
@@ -32,4 +33,20 @@ class EditGuru extends EditRecord
                 }),
         ];
     }
+
+    protected function mutateFormDataBeforeSave(array $data): array
+    {
+        $oldEmail = $this->record->email;
+
+        if ($data['email'] !== $oldEmail) {
+            User::where('related_id', $this->record->id)
+                ->where('role', 'guru')
+                ->update([
+                    'email' => $data['email'],
+                ]);
+        }
+
+        return $data;
+    }
+
 }

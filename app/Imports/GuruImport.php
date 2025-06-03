@@ -15,7 +15,7 @@ class GuruImport implements OnEachRow, WithHeadingRow
         $row = $row->toArray();
 
         $email = trim($row['email']);
-        $nip = $row['nip'];
+        $nip = str_replace(' ', '', $row['nip']);
 
         if (!preg_match('/^[a-zA-Z0-9._%+-]+@gurusija\.com$/', $email)) {
             return;
@@ -30,37 +30,30 @@ class GuruImport implements OnEachRow, WithHeadingRow
             return;
         }
 
+        $kontak = preg_replace('/[^0-9]/', '', $row['kontak']);
+        if (str_starts_with($kontak, '0')) {
+            $kontak = '+62' . substr($kontak, 1);
+        } elseif (!str_starts_with($kontak, '62')) {
+            $kontak = '+62' . $kontak;
+        } else {
+            $kontak = '+' . $kontak;
+        }
+
         $guru = Guru::create([
             'nama'   => $row['nama'],
             'nip'    => $nip,
             'alamat' => $row['alamat'],
-            'kontak' => $row['kontak'],
+            'kontak' => $kontak,
             'email'  => $email,
             'gender' => $gender,
         ]);
 
-        $username = $this->extractUsernameFromName($row['nama']);
-
         User::create([
             'name' => $guru->nama,
-            'email' => $username . '@gurusija.com',
+            'email' => $email,
             'password' => Hash::make('gurusija123'),
             'role' => 'guru',
             'related_id' => $guru->id,
         ]);
-
-    }
-
-    private function extractUsernameFromName(string $nama): string
-    {
-        $namaTanpaGelar = explode(',', $nama)[0];
-        $parts = preg_split('/\s+/', trim($namaTanpaGelar));
-
-        $filtered = array_filter($parts, function ($part) {
-            return !preg_match('/^[A-Z][a-z]?\.$|^[A-Z]{1,4}$/', $part);
-        });
-
-        $filtered = array_values($filtered);
-        return strtolower($filtered[count($filtered) - 1] ?? 'guru');
     }
 }

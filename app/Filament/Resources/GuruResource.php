@@ -56,9 +56,19 @@ class GuruResource extends Resource
                 ->label('Alamat'),
 
             Forms\Components\TextInput::make('kontak')
-                ->required()
                 ->label('Kontak Telepon')
-                ->tel(),
+                ->required()
+                ->tel()
+                ->prefix('+62')
+                ->afterStateUpdated(function ($state, callable $set) {
+                    // Pastikan yang tersimpan di database pakai +62 di depan
+                    if (str_starts_with($state, '0')) {
+                        $set('kontak', '+62' . substr($state, 1));
+                    } elseif (!str_starts_with($state, '+62')) {
+                        // Kalau user input tanpa 0 atau +62, tambahkan +62 otomatis
+                        $set('kontak', '+62' . $state);
+                    }
+                }),
 
             Forms\Components\TextInput::make('email')
                 ->required()
@@ -85,6 +95,8 @@ class GuruResource extends Resource
                     ->label('Jenis Kelamin')
                     ->formatStateUsing(fn ($state) => $state === 'L' ? 'Laki-laki' : 'Perempuan'),
                 Tables\Columns\TextColumn::make('email')->searchable(),
+                Tables\Columns\TextColumn::make('kontak')
+                    ->label('Kontak Telepon'),
             ])
             ->headerActions([
                 Action::make('Import CSV')
@@ -112,20 +124,39 @@ class GuruResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])
-            ->bulkActions([
+             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
-                    ->before(function ($records) {
+                    ->action(function ($records, $data) {
+                        $undeletedNames = [];
+
                         foreach ($records as $record) {
                             if ($record->pkls()->exists()) {
-                                \Filament\Notifications\Notification::make()
-                                    ->title("Gagal Menghapus")
-                                    ->body("Guru sedang membimbing PKL.")
-                                    ->danger()
-                                    ->send();
-
-                                throw new Halt(); // Ini yang benar untuk menghentikan proses
+                                $undeletedNames[] = $record->nama;
+                                continue;
                             }
+
+                            $record->delete();
+
+                            // Hapus user terkait guru
+                            \App\Models\User::where('related_id', $record->id)
+                                ->where('role', 'guru')
+                                ->delete();
+                        }
+
+                        if (count($undeletedNames)) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Sebagian guru tidak bisa dihapus')
+                                ->body('Guru berikut tidak dihapus karena sedang membimbing PKL: ' . implode(', ', $undeletedNames))
+                                ->danger()
+                                ->send();
+                        }
+
+                        if (count($records) !== count($undeletedNames)) {
+                            \Filament\Notifications\Notification::make()
+                                ->title('Berhasil menghapus guru yang tidak membimbing PKL')
+                                ->success()
+                                ->send();
                         }
                     }),
                 ]),
