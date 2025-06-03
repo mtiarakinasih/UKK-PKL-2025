@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('nama');
             $table->string('nis')->unique();
             $table->enum('gender', ['L', 'P']);
-            $table->text('alamat');
+            $table->string('alamat');
             $table->string('kontak');
             $table->string('email')->unique();
             $table->boolean('status_pkl')->default(false);
